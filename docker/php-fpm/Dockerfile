@@ -6,12 +6,23 @@ FROM php:${VERSION}-fpm-alpine AS dev
 ## Install system dependencies
 RUN apk update && \
     apk add --no-cache --virtual dev-deps git autoconf gcc g++ make && \
-    apk add --no-cache zlib-dev libzip-dev
+    apk add --no-cache zlib-dev libzip-dev icu-dev
 
 ## Install php extensions
 RUN pecl install xdebug && \
     docker-php-ext-enable xdebug && \
-    docker-php-ext-install pdo_mysql zip
+    docker-php-ext-install pdo_mysql zip intl
+
+ARG APCU_VERSION=5.1.18
+RUN  set -eux; \
+    pecl install \
+    	    apcu-${APCU_VERSION} \
+    	; \
+    	pecl clear-cache; \
+    	docker-php-ext-enable \
+    	    apcu \
+    	    opcache \
+    	;
 
 ## Copy php default configuration
 COPY ./docker/php-fpm/default.ini /usr/local/etc/php/conf.d/default.ini

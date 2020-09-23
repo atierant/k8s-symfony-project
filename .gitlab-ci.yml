@@ -104,10 +104,10 @@ integration-tests:
     - docker load -i build/$BUILD_IMAGE/$BUILD_TARGET.tar
   script:
     # Tag the image
-    - docker tag $BUILD_IMAGE:$BUILD_TARGET babenkoivan/$BUILD_IMAGE:${CI_COMMIT_SHA:0:8}
+    - docker tag $BUILD_IMAGE:$BUILD_TARGET atierant/$BUILD_IMAGE:${CI_COMMIT_SHA:0:8}
     # Push the image
     - echo $CONTAINER_REGISTRY_PASSWORD | docker login -u $CONTAINER_REGISTRY_USER --password-stdin
-    - docker push babenkoivan/$BUILD_IMAGE:${CI_COMMIT_SHA:0:8}
+    - docker push atierant/$BUILD_IMAGE:${CI_COMMIT_SHA:0:8}
   only:
     - master
 
@@ -136,7 +136,7 @@ registry-update-mysql:
     - build-mysql-prod
 
 .deploy-template: &deployTemplate
-  image: babenkoivan/helm-gke
+  image: atierant/helm-gke
   before_script:
     # Fetch cluster credentials
     - sh ci/fetch-cluster-credentials $SERVICE_ACCOUNT_KEY $CLUSTER_NAME $CLUSTER_ZONE
@@ -180,7 +180,7 @@ end-to-end-test:
     - master
 
 .rollback-template: &rollbackTemplate
-  image: babenkoivan/helm-gke
+  image: atierant/helm-gke
   before_script:
     # Fetch cluster credentials
     - sh ci/fetch-cluster-credentials $SERVICE_ACCOUNT_KEY $CLUSTER_NAME $CLUSTER_ZONE
